@@ -10,7 +10,9 @@ module.exports = override(
    javascriptEnabled: true,
    modifyVars: { '@primary-color': '#009462' },
  }),
- addWebpackAlias({        
-    "assets": path.resolve(__dirname, "src/assets"),        
+ addWebpackAlias({  
+    "@": path.resolve(__dirname, "src"),
+    "assets": path.resolve(__dirname, "src/assets"),
+    "api": path.resolve(__dirname, "src/static/api"),        
 })
 );

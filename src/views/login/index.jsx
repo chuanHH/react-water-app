@@ -1,10 +1,13 @@
 import './index.less'
 import React from 'react';
+import CommonApi from 'api/common'
 import LoginTitle from 'assets/image/login-title1.png'
 import { Form, Icon, Input, Button } from 'antd';
+import md5 from 'md5';
+import {message} from 'antd'
 class Login extends React.Component{
     state  ={
-        isPass: '1',
+        isPass: 1,
         count:0
      }  
      changeRouter(type){
@@ -18,6 +21,17 @@ class Login extends React.Component{
         this.props.form.validateFields((err, values) => {
           if (!err) {
             console.log('Received values of form: ', values);
+            const loginParams = {
+                loginType: this.state.isPass,
+                mobile: values.mobile,
+                password:md5(values.password)
+            }
+            CommonApi.userLogin(loginParams).then(res=>{
+               message.success('登录成功') 
+               setTimeout(()=>{
+                window.location.href = '/#/'; 
+               },200)  
+            })
           }
         });
       }
@@ -31,11 +45,11 @@ class Login extends React.Component{
                 </p>
                <div className="changeLogin">
                 <ul>
-                <li className={this.state.isPass === '1' ? 'active' : null} onClick={()=>this.changeRouter('1')}>密码登录</li>
-                <li className={this.state.isPass === '2' ? 'active' : null} onClick={()=>this.changeRouter('2')}>手机验证码登录</li>
+                <li className={this.state.isPass === 1 ? 'active' : null} onClick={()=>this.changeRouter(1)}>密码登录</li>
+                <li className={this.state.isPass === 2 ? 'active' : null} onClick={()=>this.changeRouter(2)}>手机验证码登录</li>
                 </ul>
             </div>
-            <Form className="login-form" onSubmit={this.handleSubmit}>
+            <Form className="login-form" autoComplete="off" onSubmit={this.handleSubmit}>
             <Form.Item>
                 {getFieldDecorator('mobile', {
                 rules: [{ required: true, message: '请输入手机号码' }],
@@ -46,13 +60,14 @@ class Login extends React.Component{
                     />,
                 )}
             </Form.Item>
-            {this.state.isPass === '1' ? 
+            {this.state.isPass === 1 ? 
             <Form.Item>
             {getFieldDecorator('password', {
             rules: [{ required: true, message: '请输入密码' }],
             })(
                 <Input
                 prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                type="password"
                 placeholder="密码"
                 />,
             )}
@@ -66,7 +81,7 @@ class Login extends React.Component{
                     placeholder="验证码"
                     />
                 )}
-                <Button className="getCode">获取验证码</Button>
+                <span className="getCode">获取验证码</span>
             </Form.Item>
             }
             <Form.Item>
