@@ -5,12 +5,22 @@ import { Form, Icon, Input, Button } from 'antd';
 class Login extends React.Component{
     state  ={
         isPass: '1',
+        count:0
      }  
      changeRouter(type){
          this.setState({
              isPass: type
          })
+         this.props.form.resetFields()
      } 
+     handleClick=()=>{
+        this.setState((prevState, props) => {
+           return {count:1}
+        })
+        this.setState((prevState, props) => {
+            return {count:prevState.count+1}
+         })
+     }
      handleSubmit = e => {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
@@ -33,6 +43,7 @@ class Login extends React.Component{
                 <li className={this.state.isPass === '2' ? 'active' : null} onClick={()=>this.changeRouter('2')}>手机验证码登录</li>
                 </ul>
             </div>
+            <Button type="primary" onClick={this.handleClick}>点击{this.state.count}</Button>
             <Form className="login-form" onSubmit={this.handleSubmit}>
             <Form.Item>
                 {getFieldDecorator('mobile', {
@@ -60,7 +71,7 @@ class Login extends React.Component{
                 rules: [{ required: true, message: '请输入验证码' }],
                 })(
                     <Input
-                    prefix={<Icon type="mobile" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                    prefix={<Icon type="block" style={{ color: 'rgba(0,0,0,.25)' }} />}
                     placeholder="验证码"
                     />
                 )}
